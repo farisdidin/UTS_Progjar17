@@ -1,4 +1,4 @@
-##program adu cepat matematika.##
+# Program adu cepat matematika.
 
 - Setiap 10 detik, program di server akan menggenerate soal matematika secara random dengan min. 4 operator.
   Misal : 7 * 3 + 5 * 6 / 2 
