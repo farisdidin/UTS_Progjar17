@@ -17,9 +17,9 @@ class ClientHandler(Thread):
         addresses.append(self._address)
 
     def run(self):
-        self._client.send('Welcome to the chatroom!\n')
-        time.sleep(10)
-        self._client.send('soal selanjutnya')
+        self._client.send('Welcome to the chatroom!\n\r')
+        # time.sleep(2)
+        # self._client.send('soal selanjutnya\n\r')
 
         while 1:
             message =self._client.recv(BUFSIZE)
@@ -64,6 +64,8 @@ addresses=[]
 
 while True:
     print "Waiting for connection..."
+    print sockets
+    print addresses
     client, address = server.accept()
     print('...client connected from: ',address)
     handler = ClientHandler(client,address)
