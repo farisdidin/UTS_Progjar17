@@ -3,6 +3,7 @@ from codecs import decode
 #from chatrecord import ChatRecord
 from threading import Thread
 from time import ctime
+import time
 
 class ClientHandler(Thread):
 
@@ -17,6 +18,8 @@ class ClientHandler(Thread):
 
     def run(self):
         self._client.send('Welcome to the chatroom!\n')
+        time.sleep(10)
+        self._client.send('soal selanjutnya')
 
         while 1:
             message =self._client.recv(BUFSIZE)
