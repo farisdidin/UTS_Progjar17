@@ -4,12 +4,17 @@ from codecs import decode
 from threading import Thread
 from time import ctime
 import time
+import random
+import math
+import sys
 
 class ClientHandler(Thread):
 
     def __init__(self,client,address):
         global sockets
         global addresses
+        global bankSoal
+        global hasilJawaban
         Thread.__init__(self)
         self._client = client
         self._address = address
@@ -22,34 +27,12 @@ class ClientHandler(Thread):
         # self._client.send('soal selanjutnya\n\r')
 
         while 1:
-            message =self._client.recv(BUFSIZE)
-            print '\n\n',sockets
-            if not message:
-                print "Client disconnected."
-                addIndex=sockets.index(self._client)
-                del sockets[addIndex]
-                del addresses[addIndex]
-                self._client.close()
-                break
-            else:
-                if 'ONLINE#' in message:
-                    for x in sockets:
-                        if (x!=self._client):
-                            try:
-                                x.send(message[7:])
-                            except:
-                                print 'disconnected'
-                                continue
-                    print message[7:]
-                else:     
-                    for x in sockets:
-                        try:
-                            x.send(message)
-                            #/*sockets is the list of all client*/
-                        except:
-                            print ' '
-                            continue
-                    print message
+            for x in bankSoal:
+                #soal =( x + '\n\r')
+                self._client.send(x)
+                time.sleep(4)
+
+           
 
 
 HOST = 'localhost'
@@ -61,6 +44,42 @@ server.bind(ADDRESS)
 server.listen(5)
 sockets=[]
 addresses=[]
+bankSoal = []
+hasilJawaban = []
+j = 0
+while j < 10:
+    ops = ['+', '-', '*', '/']
+    jml = random.randint(3,8)
+    i =0
+    soal = []
+
+    while i < jml:
+        num = random.randint(1, 10)
+        numstr = str(num)
+        opr = ['+', '-', '*', '/']
+        operand = random.choice(opr)
+        operandstr = str(operand)
+        soal.append(numstr)
+        soal.append(operandstr)
+        i+=1
+    num1 = random.randint(1, 10)
+    num1str = str(num1)
+    soal.append(num1str)
+    soaljoin = ' '.join(soal)
+    soaljoinfix = soaljoin+'\n'
+    print soaljoinfix
+    bankSoal.append(soaljoinfix)
+    hasil = eval(soaljoin)
+    hasilJawaban.append(hasil)
+    
+#     print hasil
+#     print 'halo'
+    j+=1
+# for x in bankSoal:
+#     print x
+#     time.sleep(4)
+# sys.exit()
+
 
 while True:
     print "Waiting for connection..."

@@ -9,8 +9,8 @@ sys.stdout.write('>> ')
 
 try:
 	while True:
-		message = sys.stdin.readline()    
-		client_socket.send(message)
+		# message = sys.stdin.readline()    
+		# client_socket.send(message)
 		sys.stdout.write(client_socket.recv(1024))
 		sys.stdout.write('>> ')
 

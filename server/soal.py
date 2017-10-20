@@ -4,7 +4,7 @@ import sys
 import time
 j = 0
 bankSoal = []
-
+hasilJawaban = []
 while j < 10:
 	ops = ['+', '-', '*', '/']
 	jml = random.randint(3,8)
@@ -26,6 +26,7 @@ while j < 10:
 	soaljoin = ' '.join(soal)
 	bankSoal.append(soaljoin)
 	hasil = eval(soaljoin)
+	hasilJawaban.append(hasil)
 	print hasil
 	print 'halo'
 	j+=1
