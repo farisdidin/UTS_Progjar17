@@ -10,16 +10,16 @@ import sys
 
 class ClientHandler(Thread):
 
-    def __init__(self,client,address):
+    def __init__(self,client):
         global sockets
         global addresses
         global bankSoal
         global hasilJawaban
         Thread.__init__(self)
         self._client = client
-        self._address = address
-        sockets.append(self._client)
-        addresses.append(self._address)
+        #self._address = address
+        # sockets.append(self._client)
+        # addresses.append(self._address)
 
     def run(self):
         self._client.send('Welcome to the chatroom!\n\r')
@@ -27,6 +27,7 @@ class ClientHandler(Thread):
         # self._client.send('soal selanjutnya\n\r')
 
         while 1:
+            time.sleep(5)
             for x in bankSoal:
                 #soal =( x + '\n\r')
                 self._client.send(x)
@@ -48,7 +49,6 @@ bankSoal = []
 hasilJawaban = []
 j = 0
 while j < 10:
-    ops = ['+', '-', '*', '/']
     jml = random.randint(3,8)
     i =0
     soal = []
@@ -86,6 +86,10 @@ while True:
     print sockets
     print addresses
     client, address = server.accept()
+    sockets.append(client)
     print('...client connected from: ',address)
-    handler = ClientHandler(client,address)
-    handler.start()
+    peserta = len(sockets)
+    if peserta >= 3:
+        for client in sockets:
+            handler = ClientHandler(client)
+            handler.start()
