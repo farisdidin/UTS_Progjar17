@@ -1,6 +1,4 @@
 from socket import *
-from codecs import decode
-#from chatrecord import ChatRecord
 from threading import Thread
 from time import ctime
 import time
@@ -17,25 +15,34 @@ class ClientHandler(Thread):
         global hasilJawaban
         global jawabanDariClient
         Thread.__init__(self)
+        self._score = []
+        self._jawaban = []
         self._client = client
-        #self._address = address
-        # sockets.append(self._client)
-        # addresses.append(self._address)
-
+        
     def run(self):
         self._client.send('QUIZ akan dimulai beberapa saat lagi \n\r')
-        # time.sleep(2)
-        # self._client.send('soal selanjutnya\n\r')
+        
 
         
         time.sleep(5)
         for x in bankSoal:
-            #soal =( x + '\n\r')
             self._client.send(x)
             jawabanClient = self._client.recv(BUFSIZE).strip('\n')
-            jawabanDariClient.append(jawabanClient)
-            print jawabanDariClient
+            self._jawaban.append(jawabanClient)
+
             time.sleep(10)
+        #cek jawaban
+        a = 0
+        nilaiClient = 0
+        while a < 10 :
+            if  self._jawaban[a] == hasilJawaban[a]:
+                nilaiClient+=5
+            else:
+                nilaiClient+=0
+        print sel._jawaban
+        print hasilJawaban
+        print nilaiClient 
+
 
 
            
@@ -73,18 +80,11 @@ while j < 10:
     soal.append(num1str)
     soaljoin = ' '.join(soal)
     soaljoinfix = soaljoin+'\n'
-    print soaljoinfix
     bankSoal.append(soaljoinfix)
     hasil = eval(soaljoin)
     hasilJawaban.append(hasil)
     
-#     print hasil
-#     print 'halo'
     j+=1
-# for x in bankSoal:
-#     print x
-#     time.sleep(4)
-# sys.exit()
 
 
 while True:
@@ -97,6 +97,4 @@ while True:
         for client in sockets:
             handler = ClientHandler(client)
             handler.start()
-    print sockets
-    print addresses
-    print jawabanDariClient
+    
