@@ -28,21 +28,23 @@ class ClientHandler(Thread):
         for x in bankSoal:
             self._client.send(x)
             jawabanClient = self._client.recv(BUFSIZE).strip('\n')
-            self._jawaban.append(jawabanClient)
+            self._jawaban.append(int (jawabanClient))
 
-            time.sleep(10)
-        #cek jawaban
-        a = 0
-        nilaiClient = 0
-        while a < 10 :
-            if  self._jawaban[a] == hasilJawaban[a]:
-                nilaiClient+=5
-            else:
-                nilaiClient+=0
-        print sel._jawaban
+            time.sleep(5)
+        
+        print self._jawaban
         print hasilJawaban
-        print nilaiClient 
-
+        # print self._nilaiClient 
+        x = 0
+        nilai = 0
+        while x < len(bankSoal):
+            if self._jawaban[x] == hasilJawaban[x]:
+                nilai += 5
+            else:
+                nilai += 0
+            x+=1
+        print nilai
+         
 
 
            
@@ -61,7 +63,7 @@ bankSoal = []
 hasilJawaban = []
 jawabanDariClient = []
 j = 0
-while j < 10:
+while j < 2:
     jml = random.randint(3,8)
     i =0
     soal = []
@@ -91,9 +93,9 @@ while True:
     print "Waiting for connection..."
     client, address = server.accept()
     sockets.append(client)
-    print('...client connected from: ',address)
+    print('...client connected from: ',address,'with id : ', address[1])
     peserta = len(sockets)
-    if peserta >= 3:
+    if peserta >= 1:
         for client in sockets:
             handler = ClientHandler(client)
             handler.start()
