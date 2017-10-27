@@ -114,5 +114,5 @@ while True:
 
     print jumlahThread
     print finalScore
-    # sortedScore = sorted(finalScore.values())
-    # print sortedScore
+    sortedScore = sorted(finalScore.values())
+    print sortedScore
