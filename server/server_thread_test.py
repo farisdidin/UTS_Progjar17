@@ -5,32 +5,31 @@ import time
 import random
 import math
 import sys
-
+import operator
 class ClientHandler(Thread):
 
-    def __init__(self,client):
-        global sockets
-        global addresses
+    def __init__(self,client,number):
         global bankSoal
         global hasilJawaban
-        global jawabanDariClient
+        global finalScore
         Thread.__init__(self)
-        self._score = []
         self._jawaban = []
         self._client = client
+        self._number = number
         
     def run(self):
         self._client.send('QUIZ akan dimulai beberapa saat lagi \n\r')
-        
+        nomorId = ('Kamu mendapatkan ID '+str(self._number)+'\r')
+        self._client.send(nomorId)
 
         
         time.sleep(5)
         for x in bankSoal:
             self._client.send(x)
+            time.sleep(5)
             jawabanClient = self._client.recv(BUFSIZE).strip('\n')
             self._jawaban.append(int (jawabanClient))
 
-            time.sleep(5)
         
         print self._jawaban
         print hasilJawaban
@@ -44,7 +43,9 @@ class ClientHandler(Thread):
                 nilai += 0
             x+=1
         print nilai
-         
+        finalScore[self._number] = nilai
+        self._client.close()
+       
 
 
            
@@ -58,12 +59,16 @@ server = socket(AF_INET,SOCK_STREAM)
 server.bind(ADDRESS)
 server.listen(5)
 sockets=[]
-addresses=[]
+idPort = []
 bankSoal = []
 hasilJawaban = []
-jawabanDariClient = []
+finalScore = {
+    
+}
+
+
 j = 0
-while j < 2:
+while j < 1:
     jml = random.randint(3,8)
     i =0
     soal = []
@@ -85,7 +90,8 @@ while j < 2:
     bankSoal.append(soaljoinfix)
     hasil = eval(soaljoin)
     hasilJawaban.append(hasil)
-    
+    print bankSoal
+    print hasilJawaban
     j+=1
 
 
@@ -93,10 +99,20 @@ while True:
     print "Waiting for connection..."
     client, address = server.accept()
     sockets.append(client)
+    idPort.append(address[1])
     print('...client connected from: ',address,'with id : ', address[1])
     peserta = len(sockets)
-    if peserta >= 1:
-        for client in sockets:
-            handler = ClientHandler(client)
+    if peserta >= 3:
+        for client,number in zip(sockets,idPort):
+            handler = ClientHandler(client,number)
+            handler.daemon = True
             handler.start()
-    
+            print 'OPO'
+
+        for x in sockets:
+            handler.join()
+
+    print jumlahThread
+    print finalScore
+    # sortedScore = sorted(finalScore.values())
+    # print sortedScore
