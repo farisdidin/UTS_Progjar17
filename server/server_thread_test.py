@@ -6,6 +6,9 @@ import random
 import math
 import sys
 import operator
+import logging
+logging.basicConfig(level=logging.DEBUG,format='(%(threadName)-10s)%(message)s',)
+
 class ClientHandler(Thread):
 
     def __init__(self,client,number):
@@ -18,8 +21,9 @@ class ClientHandler(Thread):
         self._number = number
         
     def run(self):
-        self._client.send('QUIZ akan dimulai beberapa saat lagi \n\r')
-        nomorId = ('Kamu mendapatkan ID '+str(self._number)+'\r')
+        logging.debug('running')
+        nomorId = ('Selamat Datang di Quiz\nKamu mendapatkan ID '+str(self._number)+'\n\r')
+        #deskself._client.send('QUIZ akan dimulai beberapa saat lagi \n\r')
         self._client.send(nomorId)
 
         
@@ -44,8 +48,8 @@ class ClientHandler(Thread):
             x+=1
         print nilai
         finalScore[self._number] = nilai
-        self._client.close()
-       
+        #self._client.close()
+        logging.debug('Over')
 
 
            
@@ -57,6 +61,7 @@ ADDRESS = (HOST,PORT)
 BUFSIZE = 1024
 server = socket(AF_INET,SOCK_STREAM)
 server.bind(ADDRESS)
+server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 server.listen(5)
 sockets=[]
 idPort = []
@@ -103,16 +108,20 @@ while True:
     print('...client connected from: ',address,'with id : ', address[1])
     peserta = len(sockets)
     if peserta >= 3:
+        handlers = []
         for client,number in zip(sockets,idPort):
             handler = ClientHandler(client,number)
+            handlers.append(handler)
             handler.daemon = True
             handler.start()
+            #handler.join()
+            #time.sleep(0.5)
             print 'OPO'
 
-        for x in sockets:
-            handler.join()
+        for x in handlers:
+            x.join()
 
-    print jumlahThread
+    
     print finalScore
     sortedScore = sorted(finalScore.values())
     print sortedScore
